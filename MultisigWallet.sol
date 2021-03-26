@@ -53,7 +53,10 @@ contract MultisigWallet {
     modifier onlyOwners() {}
 
     // Should initialize the owners list and the limit
-    constructor(address[] memory _owners, uint256 _limit) {}
+    constructor(address[] memory _owners, uint256 _limit) {
+        owners = _owners;
+        limit = _limit;
+    }
 
     // Empty function
     function deposit() public payable {}
@@ -62,7 +65,11 @@ contract MultisigWallet {
     function createTransfer(uint256 _amount, address payable _receiver)
         public
         onlyOwners
-    {}
+    {
+        transferRequests.push(
+            Transfer(_amount, _receiver, 0, false, transferRequests.length)
+        );
+    }
 
     /*
     - Set approval for one of the transfer requests
