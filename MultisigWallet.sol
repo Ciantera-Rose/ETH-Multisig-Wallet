@@ -104,6 +104,9 @@ contract MultisigWallet {
         }
     }
 
-    // Shhould return alll transfer requests
-    function getTransferRequests() public view returns (Transfer[] memory) {}
+    // Should return all transfer requests
+    function getTransferRequests() public view returns (Transfer[] memory) {
+        return transferRequests;
+
+    }
 }
