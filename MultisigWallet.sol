@@ -42,6 +42,15 @@ contract MultisigWallet {
         bool hasBeenSent;
         uint256 id;
     }
+
+    event TransferRequestCreated(
+        uint256 _id,
+        uint256 _amount,
+        address _initiator,
+        address _receiver
+    );
+    event ApprovalReceived(uint256 _id, uint256 _approvals, address _approver);
+    event TransferApproved(uint256 _id);
     // array of objects to store transfer requests
     Transfer[] transferRequests;
 
@@ -75,6 +84,12 @@ contract MultisigWallet {
         public
         onlyOwners
     {
+        emit TransferRequestCreated(
+            transferRequests.length,
+            _amount,
+            msg.sender,
+            _receiver
+        );
         transferRequests.push(
             Transfer(_amount, _receiver, 0, false, transferRequests.length)
             // add event that transfer has been created to alert owners
@@ -95,18 +110,24 @@ contract MultisigWallet {
         require(approvals[msg.sender][_id] == false);
         require(transferRequests[_id].hasBeenSent == false);
 
-        approvals[msg.sender[_id] == true;
+        approvals[msg.sender][_id] = true;
         transferRequests[_id].approvals++;
 
-        if(transferRequests[_id].approvals >= limit) {
+        emit ApprovalReceived(_id, transferRequests[_id].approvals, msg.sender);
+
+        if (transferRequests[_id].approvals >= limit) {
             transferRequests[_id].hasBeenSent = true;
-            transferRequests[_id].receiver.transfer(transferRequests[_id].amount);
+            transferRequests[_id].receiver.transfer(
+                transferRequests[_id].amount
+                emit TransferApproved(_id);
+            );
         }
     }
 
     // Should return all transfer requests
     function getTransferRequests() public view returns (Transfer[] memory) {
         return transferRequests;
-
     }
 }
+
+
