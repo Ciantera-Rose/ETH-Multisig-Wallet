@@ -91,7 +91,18 @@ contract MultisigWallet {
     - An owner should not be able to vote on a transfer request that has already been sent
 */
 
-    function approve(uint256 _id) public onlyOwners {}
+    function approve(uint256 _id) public onlyOwners {
+        require(approvals[msg.sender][_id] == false);
+        require(transferRequests[_id].hasBeenSent == false);
+
+        approvals[msg.sender[_id] == true;
+        transferRequests[_id].approvals++;
+
+        if(transferRequests[_id].approvals >= limit) {
+            transferRequests[_id].hasBeenSent = true;
+            transferRequests[_id].receiver.transfer(transferRequests[_id].amount);
+        }
+    }
 
     // Shhould return alll transfer requests
     function getTransferRequests() public view returns (Transfer[] memory) {}
