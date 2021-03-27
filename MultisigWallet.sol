@@ -50,7 +50,16 @@ contract MultisigWallet {
     mapping(address => mapping(uint256 => bool)) approvals;
 
     // Should only allow people in the owners list to continue the execution.
-    modifier onlyOwners() {}
+    modifier onlyOwners() {
+        bool owner = false;
+        for (uint256 i = 0; i < owners.length; i++) {
+            if (owners[i] == msg.sender) {
+                owner = true;
+            }
+        }
+        require(owner == true);
+        _;
+    }
 
     // Should initialize the owners list and the limit
     constructor(address[] memory _owners, uint256 _limit) {
@@ -68,6 +77,7 @@ contract MultisigWallet {
     {
         transferRequests.push(
             Transfer(_amount, _receiver, 0, false, transferRequests.length)
+            // add event that transfer has been created to alert owners
         );
     }
 
